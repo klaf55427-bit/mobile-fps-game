@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>میدان سه‌بعدی دونفره</title>
+<title>میدان تاکتیکی دونفره</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;color:#fff;font-family:Tahoma,Arial,sans-serif;touch-action:none}
 #game{position:fixed;inset:0}canvas{display:block}
-#menu{position:fixed;z-index:5;inset:0;background:linear-gradient(#10202bef,#0b1119f5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
-.card{width:min(460px,100%);background:#172632;border:1px solid #3a5969;border-radius:18px;padding:20px;box-shadow:0 12px 40px #0008}
+#menu{position:fixed;z-index:5;inset:0;background:linear-gradient(#101b2ceF,#080d14f7);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.card{width:min(460px,100%);background:#141d27;border:1px solid #52616d;border-radius:18px;padding:20px;box-shadow:0 12px 40px #0008}
 h1{font-size:23px;margin:0 0 10px}p{line-height:1.8;color:#d0e0e8;font-size:14px}
 input,button{font:inherit;border-radius:10px;border:0;padding:13px;width:100%;margin-top:9px}
 input{background:#0b151c;color:#fff;border:1px solid #45606c;text-transform:uppercase}
@@ -32,16 +32,16 @@ button{background:#24a56a;color:#fff;font-weight:bold}button.secondary{backgroun
 <body>
 <div id="game"></div>
 <div id="menu"><div class="card">
-<h1>🎮 میدان سه‌بعدی دونفره</h1>
-<p>برای بازی آنلاین، هر دو گوشی باید اینترنت داشته باشند. یک نفر اتاق می‌سازد و کد اتاق را برای نفر دوم می‌فرستد. این نسخه آزمایشی است؛ شلیک و امتیاز ساده‌اند و برخورد واقعی گلوله هنوز پیاده‌سازی نشده.</p>
+<h1>🎯 میدان تاکتیکی | نبرد دونفره</h1>
+<p>سبک شوتر تاکتیکی با نقشه صنعتی، سنگر، جعبه، نشانه‌گیر و سلاح اول‌شخص. یک نفر اتاق می‌سازد و کد را برای دوستش می‌فرستد. این هنوز نسخه آزمایشی است؛ سیستم برخورد و آسیب کامل مثل Counter-Strike ندارد.</p>
 <button id="create">ساخت اتاق جدید</button>
 <input id="room" placeholder="کد اتاق دوستت" maxlength="8" autocomplete="off">
 <button id="join" class="secondary">ورود به اتاق</button>
 <div id="status">ابتدا یک اتاق بساز یا کد دوستت را وارد کن.</div>
 </div></div>
 <div id="hud">
-<div id="top"><div class="pill" id="roomLabel">اتاق: —</div><div class="pill" id="score">امتیاز: 0 - 0</div></div>
-<button id="backmenu">منو</button><div id="cross">+</div>
+<div id="top"><div class="pill" id="roomLabel">اتاق: —</div><div class="pill" id="score">امتیاز: 0 - 0</div><div class="pill" id="stats">سلامت 100 | مهمات 30/90</div></div>
+<button id="backmenu">منو</button><div id="cross">⌖</div><div id="weaponLabel" style="position:absolute;right:14px;bottom:112px;background:#071018b8;padding:7px 10px;border-radius:8px;font-size:12px">RIFLE · AUTO</div>
 <div id="hint">حرکت: دکمه‌های سمت چپ · نگاه: انگشت را سمت راست بکش</div><div id="look"></div>
 <div id="controls"><div class="pad">
 <button class="ctrl" id="forward">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="back">▼</button><button class="ctrl" id="right">▶</button>
@@ -60,22 +60,51 @@ function makeWorld(){
  if(started)return;
  if(!window.THREE){status('کتابخانهٔ سه‌بعدی بارگذاری نشد. اینترنت/VPN را بررسی و صفحه را دوباره باز کن.');return}
  $('menu').style.display='none';$('hud').style.display='block';started=true;
- scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc6d6);scene.fog=new THREE.Fog(0x9fc6d6,18,48);
- camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
- renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);$('game').appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0xffffff,0x40505a,2));
- const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(5,10,4);scene.add(sun);
- const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:0x536d52}));floor.rotation.x=-Math.PI/2;floor.position.y=-.1;scene.add(floor);
- const grid=new THREE.GridHelper(60,60,0x344c3b,0x6b8469);grid.position.y=-.08;scene.add(grid);
- const wallMat=new THREE.MeshStandardMaterial({color:0x657781});
- function box(x,y,z,sx,sy,sz,mat=wallMat){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x,y,z);scene.add(m);return m}
- box(0,1,-15,30,2,1);box(0,1,15,30,2,1);box(-15,1,0,1,2,30);box(15,1,0,1,2,30);
- const crateMat=new THREE.MeshStandardMaterial({color:0x9a7950});
- [[-5,-5],[5,-4],[-7,5],[7,6],[0,-8],[0,7]].forEach(p=>box(p[0],.65,p[1],1.5,1.3,1.5,crateMat));
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb8);scene.fog=new THREE.Fog(0x9aabb8,25,75);
+ camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,120);
+ renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;$('game').appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xdcecff,0x343b42,2.1));
+ const sun=new THREE.DirectionalLight(0xffe4c2,3.0);sun.position.set(-8,18,7);scene.add(sun);
+ const fill=new THREE.DirectionalLight(0x9bbbe0,1.0);fill.position.set(10,7,-10);scene.add(fill);
+ const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+ const concrete=mat(0x68747b),darkConcrete=mat(0x424d55),sand=mat(0x9b927d),crateMat=mat(0x776044),crateEdge=mat(0x4c4234),metal=mat(0x333e46,.55,.55),yellow=mat(0xd4a72c),floorMat=mat(0x777a72),redMat=mat(0xb63c32),blueMat=mat(0x324d68);
+ function box(x,y,z,sx,sy,sz,material=concrete){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);m.position.set(x,y,z);scene.add(m);return m}
+ // Concrete industrial floor and painted tactical lanes
+ box(0,-.22,0,42,.35,42,floorMat);
+ const lineMat=new THREE.MeshStandardMaterial({color:0xd0b65d,roughness:.8});
+ for(let z=-17;z<=17;z+=4){let stripe=box(0,-.035,z,28,.015,.045,lineMat)}
+ // Outer perimeter walls and industrial buildings
+ box(0,2,-21,42,4,1.2,darkConcrete);box(0,2,21,42,4,1.2,darkConcrete);box(-21,2,0,1.2,4,42,darkConcrete);box(21,2,0,1.2,4,42,darkConcrete);
+ // Warehouse blocks at map edges
+ box(-13,2.1,-12,8,4.2,7,concrete);box(13,2.1,12,8,4.2,7,concrete);
+ box(-13,4.35,-12,8.2,.25,7.2,metal);box(13,4.35,12,8.2,.25,7.2,metal);
+ // Windows / shutters
+ for(let i=0;i<3;i++){box(-13+i*2.1,2.3,-8.42,1.25,1.4,.08,metal);box(10.1,2.2,10+i*2.1,.08,1.3,1.25,metal)}
+ // central cover blocks, crates and barriers
+ const crate=(x,z,scale=1)=>{box(x,.65*scale,z,1.5*scale,1.3*scale,1.5*scale,crateMat);box(x,.66*scale,z-.77*scale,1.25*scale,.12*scale,.04,crateEdge);box(x-.77*scale,.66*scale,z,.04,1.1*scale,1.25*scale,crateEdge)};
+ [[-5,-7,1],[4,-8,1],[7,-1,1],[-7,3,1],[2,5,1],[-2,10,.9],[10,7,.8],[-10,-2,.8]].forEach(v=>crate(...v));
+ // Jersey barriers
+ for(let i=0;i<4;i++){const b=box(-2+i*1.35,.42,-1,1.15,.84,.5,sand);b.rotation.y=.06}
+ // lamps / pipes give the scene more industrial depth
+ for(let z=-14;z<=14;z+=14){box(-18,3,z,.18,5,.18,metal);box(-18,5.5,z,1.3,.16,.6,yellow)}
+ // player avatar seen by opponent
  otherMesh=new THREE.Group();
- const body=new THREE.Mesh(new THREE.BoxGeometry(.7,1.25,.45),new THREE.MeshStandardMaterial({color:0xe04e42}));body.position.y=.65;otherMesh.add(body);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xf0c6a1}));head.position.y=1.48;otherMesh.add(head);scene.add(otherMesh);
- $('roomLabel').textContent='کد اتاق: '+roomCode+' · '+(connected?'متصل':'منتظر دوست');
+ const uniform=mat(0x9b3d32),helmet=mat(0x30383d,.6,.2),skin=mat(0xc69c7a);
+ const torso=new THREE.Mesh(new THREE.BoxGeometry(.62,.8,.36),uniform);torso.position.y=1.05;otherMesh.add(torso);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),skin);head.position.y=1.62;otherMesh.add(head);
+ const helm=new THREE.Mesh(new THREE.SphereGeometry(.24,16,10,0,Math.PI*2,0,Math.PI/2),helmet);helm.position.y=1.68;otherMesh.add(helm);
+ const legs=mat(0x353e45);for(const x of [-.18,.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.22,.62,.24),legs);leg.position.set(x,.36,0);otherMesh.add(leg)}
+ const gun=new THREE.Mesh(new THREE.BoxGeometry(.16,.13,.65),metal);gun.position.set(.36,1.2,-.25);otherMesh.add(gun);scene.add(otherMesh);
+ // First-person rifle attached to camera (decorative model)
+ const weapon=new THREE.Group();
+ const gunBody=new THREE.Mesh(new THREE.BoxGeometry(.22,.2,.75),metal);gunBody.position.set(.42,-.38,-.75);weapon.add(gunBody);
+ const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.48,10),darkConcrete);barrel.rotation.x=Math.PI/2;barrel.position.set(.42,-.34,-1.28);weapon.add(barrel);
+ const stock=new THREE.Mesh(new THREE.BoxGeometry(.18,.16,.32),crateEdge);stock.position.set(.42,-.4,-.28);weapon.add(stock);
+ const sight=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,.14),yellow);sight.position.set(.42,-.23,-.75);weapon.add(sight);
+ camera.add(weapon);scene.add(camera);
+ // Scattered low rubble and ventilation units
+ for(let i=0;i<10;i++){let x=(i%5)*6-12,z=(Math.floor(i/5)*16)-8;box(x,.32,z,.9,.64,.8,darkConcrete)}
+ $('roomLabel').textContent='اتاق: '+roomCode+' · '+(connected?'متصل':'منتظر دوست');
  addEventListener('resize',resize);requestAnimationFrame(loop);
 }
 function resize(){if(renderer){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}}
@@ -109,14 +138,14 @@ $('join').onclick=()=>{
 };
 function hold(id){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[id]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[id]=false))}
 ['forward','back','left','right'].forEach(hold);
-$('shoot').addEventListener('pointerdown',e=>{e.preventDefault();if(conn&&conn.open){conn.send({type:'shot'});status('شلیک ثبت شد!')}else status('منتظر اتصال دوستت بمان.')});
+let ammo=30; $('shoot').addEventListener('pointerdown',e=>{e.preventDefault();if(ammo<=0){status('مهمات تمام شد؛ این نسخه فعلاً خشاب‌گذاری ندارد.');return}ammo--; $('stats').textContent='سلامت 100 | مهمات '+ammo+'/90'; if(conn&&conn.open){conn.send({type:'shot'});status('شلیک ثبت شد!')}else status('شلیک آزمایشی؛ برای امتیازگیری دوستت باید متصل باشد.')});
 let look=$('look'),tx=null,ty=null;
 look.addEventListener('pointerdown',e=>{tx=e.clientX;ty=e.clientY;try{look.setPointerCapture(e.pointerId)}catch(_){}});
 look.addEventListener('pointermove',e=>{if(tx===null||!started)return;me.yaw-=(e.clientX-tx)*.008;me.pitch=Math.max(-.7,Math.min(.7,me.pitch+(e.clientY-ty)*.006));tx=e.clientX;ty=e.clientY});
 ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>look.addEventListener(ev,()=>{tx=ty=null}));
 $('backmenu').onclick=()=>{location.reload()};
 function loop(t){if(!started)return;requestAnimationFrame(loop);
- const speed=.09,f=(keys.forward?1:0)-(keys.back?1:0),s=(keys.right?1:0)-(keys.left?1:0);
+ const speed=.105,f=(keys.forward?1:0)-(keys.back?1:0),s=(keys.right?1:0)-(keys.left?1:0);
  me.x+=(-Math.sin(me.yaw)*f+Math.cos(me.yaw)*s)*speed;me.z+=(-Math.cos(me.yaw)*f-Math.sin(me.yaw)*s)*speed;
  me.x=Math.max(-13,Math.min(13,me.x));me.z=Math.max(-13,Math.min(13,me.z));
  camera.position.set(me.x,1.65,me.z);camera.rotation.order='YXZ';camera.rotation.y=me.yaw;camera.rotation.x=me.pitch;
