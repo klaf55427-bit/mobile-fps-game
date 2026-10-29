@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>میدان سه‌بعدی دونفره</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;color:#fff;font-family:Tahoma,Arial,sans-serif;touch-action:none}
+#game{position:fixed;inset:0}canvas{display:block}
+#menu{position:fixed;z-index:5;inset:0;background:linear-gradient(#10202bef,#0b1119f5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.card{width:min(460px,100%);background:#172632;border:1px solid #3a5969;border-radius:18px;padding:20px;box-shadow:0 12px 40px #0008}
+h1{font-size:23px;margin:0 0 10px}p{line-height:1.8;color:#d0e0e8;font-size:14px}
+input,button{font:inherit;border-radius:10px;border:0;padding:13px;width:100%;margin-top:9px}
+input{background:#0b151c;color:#fff;border:1px solid #45606c;text-transform:uppercase}
+button{background:#24a56a;color:#fff;font-weight:bold}button.secondary{background:#365261}
+#status{font-size:13px;color:#ffd37a;min-height:30px;margin-top:10px;line-height:1.7}
+#hud{position:fixed;z-index:2;inset:0;pointer-events:none;display:none}
+#top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pill{background:#071018c9;padding:9px 12px;border-radius:10px;font-size:13px}
+#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:25px;text-shadow:0 1px 4px #000}
+#controls{position:absolute;bottom:16px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;pointer-events:auto;direction:ltr}
+.pad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:46px 46px;gap:5px}
+.ctrl{background:#10212bd9;border:1px solid #a9d6e377;color:white;border-radius:13px;font-size:19px;padding:8px;margin:0;touch-action:none}
+#forward{grid-column:2;grid-row:1}#left{grid-column:1;grid-row:2}#back{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+#shoot{width:78px;height:78px;border-radius:50%;background:#c84535e8;border:2px solid #ffd4c9;font-size:15px}
+#look{position:absolute;right:0;top:24%;width:48%;height:43%;pointer-events:auto}
+#hint{position:absolute;bottom:120px;left:10px;background:#071018b8;padding:7px;border-radius:8px;font-size:11px;direction:rtl;max-width:70%}
+#backmenu{pointer-events:auto;position:absolute;top:58px;left:10px;width:auto;padding:8px 11px;background:#263d4a}
+@media(min-width:700px){.pad{transform:scale(1.15);transform-origin:bottom left}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div id="menu"><div class="card">
+<h1>🎮 میدان سه‌بعدی دونفره</h1>
+<p>برای بازی آنلاین، هر دو گوشی باید اینترنت داشته باشند. یک نفر اتاق می‌سازد و کد اتاق را برای نفر دوم می‌فرستد. این نسخه آزمایشی است؛ شلیک و امتیاز ساده‌اند و برخورد واقعی گلوله هنوز پیاده‌سازی نشده.</p>
+<button id="create">ساخت اتاق جدید</button>
+<input id="room" placeholder="کد اتاق دوستت" maxlength="8" autocomplete="off">
+<button id="join" class="secondary">ورود به اتاق</button>
+<div id="status">ابتدا یک اتاق بساز یا کد دوستت را وارد کن.</div>
+</div></div>
+<div id="hud">
+<div id="top"><div class="pill" id="roomLabel">اتاق: —</div><div class="pill" id="score">امتیاز: 0 - 0</div></div>
+<button id="backmenu">منو</button><div id="cross">+</div>
+<div id="hint">حرکت: دکمه‌های سمت چپ · نگاه: انگشت را سمت راست بکش</div><div id="look"></div>
+<div id="controls"><div class="pad">
+<button class="ctrl" id="forward">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="back">▼</button><button class="ctrl" id="right">▶</button>
+</div><button class="ctrl" id="shoot">شلیک</button></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(()=> {
+const $=id=>document.getElementById(id);
+let scene,camera,renderer,peer,conn,roomCode='',started=false,connected=false;
+let me={x:0,z:4,yaw:0,pitch:0,score:0},other={x:0,z:-4,yaw:Math.PI,score:0};
+let otherMesh,lastSend=0,keys={};
+function status(t){$('status').textContent=t}
+function makeWorld(){
+ if(started)return;
+ if(!window.THREE){status('کتابخانهٔ سه‌بعدی بارگذاری نشد. اینترنت/VPN را بررسی و صفحه را دوباره باز کن.');return}
+ $('menu').style.display='none';$('hud').style.display='block';started=true;
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc6d6);scene.fog=new THREE.Fog(0x9fc6d6,18,48);
+ camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
+ renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);$('game').appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x40505a,2));
+ const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(5,10,4);scene.add(sun);
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:0x536d52}));floor.rotation.x=-Math.PI/2;floor.position.y=-.1;scene.add(floor);
+ const grid=new THREE.GridHelper(60,60,0x344c3b,0x6b8469);grid.position.y=-.08;scene.add(grid);
+ const wallMat=new THREE.MeshStandardMaterial({color:0x657781});
+ function box(x,y,z,sx,sy,sz,mat=wallMat){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x,y,z);scene.add(m);return m}
+ box(0,1,-15,30,2,1);box(0,1,15,30,2,1);box(-15,1,0,1,2,30);box(15,1,0,1,2,30);
+ const crateMat=new THREE.MeshStandardMaterial({color:0x9a7950});
+ [[-5,-5],[5,-4],[-7,5],[7,6],[0,-8],[0,7]].forEach(p=>box(p[0],.65,p[1],1.5,1.3,1.5,crateMat));
+ otherMesh=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(.7,1.25,.45),new THREE.MeshStandardMaterial({color:0xe04e42}));body.position.y=.65;otherMesh.add(body);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xf0c6a1}));head.position.y=1.48;otherMesh.add(head);scene.add(otherMesh);
+ $('roomLabel').textContent='کد اتاق: '+roomCode+' · '+(connected?'متصل':'منتظر دوست');
+ addEventListener('resize',resize);requestAnimationFrame(loop);
+}
+function resize(){if(renderer){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}}
+function sendState(){if(conn&&conn.open)conn.send({type:'state',x:me.x,z:me.z,yaw:me.yaw,score:me.score})}
+function updateConnected(){connected=true;if(started)$('roomLabel').textContent='کد اتاق: '+roomCode+' · متصل';status('اتصال برقرار شد! هر دو نفر می‌توانند حرکت کنند.')}
+function setupPeer(){
+ peer.on('error',e=>status('خطای اتصال ('+e.type+'). کد را بررسی کن؛ هر دو گوشی باید اینترنت داشته باشند.'));
+ peer.on('connection',c=>{if(conn){c.close();return}conn=c;wireConn();});
+}
+function wireConn(){
+ conn.on('open',()=>{updateConnected();if(!started)makeWorld();conn.send({type:'hello'})});
+ conn.on('data',d=>{
+  if(d.type==='hello'){if(!started)makeWorld();updateConnected()}
+  if(d.type==='state'){other.x=d.x;other.z=d.z;other.yaw=d.yaw;other.score=d.score||0;if(otherMesh){otherMesh.position.set(other.x,0,other.z);otherMesh.rotation.y=other.yaw}$('score').textContent='امتیاز: '+me.score+' - '+other.score}
+  if(d.type==='shot'){me.score++;$('score').textContent='امتیاز: '+me.score+' - '+other.score;sendState()}
+ });
+ conn.on('close',()=>{connected=false;if(started)$('roomLabel').textContent='کد اتاق: '+roomCode+' · قطع ارتباط';});
+}
+$('create').onclick=()=>{
+ if(!window.Peer){status('کتابخانهٔ اتصال بارگذاری نشد. اینترنت/VPN را بررسی کن.');return}
+ roomCode=Math.random().toString(36).slice(2,7).toUpperCase();$('room').value=roomCode;
+ status('در حال ساخت اتاق…');peer=new Peer('fps'+roomCode.toLowerCase());setupPeer();
+ peer.on('open',()=>{status('اتاق آماده است! کد '+roomCode+' را برای دوستت بفرست.');makeWorld()});
+};
+$('join').onclick=()=>{
+ if(!window.Peer){status('کتابخانهٔ اتصال بارگذاری نشد. اینترنت/VPN را بررسی کن.');return}
+ roomCode=$('room').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+ if(!roomCode){status('اول کد اتاق دوستت را وارد کن.');return}
+ status('در حال اتصال…');peer=new Peer();setupPeer();
+ peer.on('open',()=>{conn=peer.connect('fps'+roomCode.toLowerCase(),{reliable:true});wireConn();setTimeout(()=>{if(!conn||!conn.open)status('وصل نشد؛ کد را بررسی کن و مطمئن شو میزبان هنوز داخل بازی است.')},10000)});
+};
+function hold(id){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[id]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[id]=false))}
+['forward','back','left','right'].forEach(hold);
+$('shoot').addEventListener('pointerdown',e=>{e.preventDefault();if(conn&&conn.open){conn.send({type:'shot'});status('شلیک ثبت شد!')}else status('منتظر اتصال دوستت بمان.')});
+let look=$('look'),tx=null,ty=null;
+look.addEventListener('pointerdown',e=>{tx=e.clientX;ty=e.clientY;try{look.setPointerCapture(e.pointerId)}catch(_){}});
+look.addEventListener('pointermove',e=>{if(tx===null||!started)return;me.yaw-=(e.clientX-tx)*.008;me.pitch=Math.max(-.7,Math.min(.7,me.pitch+(e.clientY-ty)*.006));tx=e.clientX;ty=e.clientY});
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>look.addEventListener(ev,()=>{tx=ty=null}));
+$('backmenu').onclick=()=>{location.reload()};
+function loop(t){if(!started)return;requestAnimationFrame(loop);
+ const speed=.09,f=(keys.forward?1:0)-(keys.back?1:0),s=(keys.right?1:0)-(keys.left?1:0);
+ me.x+=(-Math.sin(me.yaw)*f+Math.cos(me.yaw)*s)*speed;me.z+=(-Math.cos(me.yaw)*f-Math.sin(me.yaw)*s)*speed;
+ me.x=Math.max(-13,Math.min(13,me.x));me.z=Math.max(-13,Math.min(13,me.z));
+ camera.position.set(me.x,1.65,me.z);camera.rotation.order='YXZ';camera.rotation.y=me.yaw;camera.rotation.x=me.pitch;
+ if(otherMesh){otherMesh.position.set(other.x,0,other.z);otherMesh.rotation.y=other.yaw}
+ if(t-lastSend>80){sendState();lastSend=t}
+ renderer.render(scene,camera);
+}
+})();
+</script>
+</body></html>
