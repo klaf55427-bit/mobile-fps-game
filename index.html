@@ -1,186 +1,70 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#0a1119">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>SHADOW OPS MOBILE</title>
+<html lang="fa" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#090f16"><link rel="manifest" href="./manifest.json"><title>SHADOW OPS // REALISTIC</title>
 <style>
-:root{--gold:#ffc928;--bg:#08111b;--panel:#111e2b;--line:#34495a;--muted:#aab8c5}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#08111b;color:#fff;font-family:Tahoma,Arial,sans-serif;touch-action:none}
-#game{position:fixed;inset:0}canvas{display:block}
-#menu{position:fixed;z-index:5;inset:0;overflow:auto;background:radial-gradient(ellipse at 50% 0%,#314457 0,#111e2b 45%,#070c12 100%);display:flex;align-items:center;justify-content:center;padding:18px}
-.card{width:min(540px,100%);padding:22px;border:1px solid #60718166;border-radius:22px;background:linear-gradient(145deg,#172737f2,#0a121cf5);box-shadow:0 24px 80px #000b}
-.brand{font-size:clamp(28px,7vw,44px);font-weight:1000;letter-spacing:2px;text-align:center;color:#fff;text-shadow:0 4px 20px #000}.brand span{color:var(--gold)}
-.sub{text-align:center;color:#b8c6d1;font-size:12px;letter-spacing:4px;margin:2px 0 15px}
-.hero{height:135px;border-radius:15px;margin:12px 0 16px;overflow:hidden;position:relative;background:linear-gradient(110deg,#182c3b,#344657 45%,#141c25);border:1px solid #506273}
-.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0000,#0008),repeating-linear-gradient(135deg,transparent 0 25px,#ffffff08 26px 28px)}
-.hero strong{position:absolute;bottom:14px;right:16px;font-size:18px}.hero small{position:absolute;bottom:43px;right:16px;color:#ffd65e}
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.feature{background:#0a1520;border:1px solid #2e4354;border-radius:12px;padding:10px 5px;text-align:center;font-size:11px;color:#d9e2e9}.feature b{display:block;color:var(--gold);font-size:18px;margin-bottom:5px}
-input,button{font:inherit;border-radius:11px;border:1px solid #415669;padding:13px;width:100%;margin-top:9px}
-input{background:#07111b;color:white;text-align:center;text-transform:uppercase;letter-spacing:3px}
-button{background:var(--gold);color:#161b20;font-weight:900;border:0;cursor:pointer}
-button.secondary{background:#24394b;color:#fff;border:1px solid #526b7e}
-#status{font-size:12px;color:#ffd56b;min-height:34px;line-height:1.8;margin-top:10px;text-align:center}
-.note{font-size:11px;line-height:1.8;color:#91a2b1;text-align:center;margin-top:12px}
-#hud{position:fixed;z-index:2;inset:0;pointer-events:none;display:none}
-#top{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;direction:ltr}
-.pill{background:#07111bdc;border:1px solid #ffffff24;padding:8px 10px;border-radius:10px;font-size:11px;backdrop-filter:blur(8px)}
-#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:25px;color:#fff;text-shadow:0 1px 5px #000}
-#controls{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;pointer-events:auto;direction:ltr}
-.pad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:44px 44px;gap:5px}
-.ctrl{background:#102333d9;border:1px solid #d6e7f066;color:white;border-radius:13px;font-size:18px;padding:5px;margin:0;touch-action:none}
-#forward{grid-column:2;grid-row:1}#left{grid-column:1;grid-row:2}#back{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
-#shoot{width:74px;height:74px;border-radius:50%;background:#b83d32eF;border:2px solid #ffb6a8;color:white;font-size:13px}
-#reload{width:58px;height:48px;background:#344b5d;color:white;font-size:11px}
-#look{position:absolute;right:0;top:20%;width:52%;height:48%;pointer-events:auto}
-#hint{position:absolute;bottom:116px;right:10px;background:#07111bd9;padding:7px 10px;border-radius:8px;font-size:10px;direction:rtl;color:#d7e2e9}
-#backmenu{pointer-events:auto;position:absolute;top:58px;left:10px;width:auto;padding:8px 11px;background:#263d4a;color:#fff}
-#toast{position:absolute;top:78px;left:50%;transform:translateX(-50%);background:#08131ddd;border:1px solid #ffffff22;border-radius:9px;padding:8px 12px;font-size:11px;display:none}
-@media(min-width:800px){#controls{max-width:900px;margin:auto}.pad{transform:scale(1.2);transform-origin:bottom left}}
-</style>
-</head>
-<body>
-<div id="game"></div>
-<div id="menu"><div class="card">
-<div class="brand">SHADOW <span>OPS</span></div><div class="sub">MOBILE · TACTICAL ARENA</div>
-<div class="hero"><small>OPERATIONS // 01</small><strong>نبرد تاکتیکی؛ آماده‌ای؟</strong></div>
-<div class="features">
-<div class="feature"><b>✦</b>محیط سه‌بعدی</div><div class="feature"><b>◎</b>کنترل لمسی</div><div class="feature"><b>⌁</b>اتاق دونفره آنلاین</div>
-</div>
-<button id="solo">شروع تمرینی</button>
-<button id="create" class="secondary">ساخت اتاق آنلاین</button>
-<input id="room" maxlength="8" placeholder="کد اتاق دوستت">
-<button id="join" class="secondary">ورود به اتاق</button>
-<div id="status">برای شروع، حالت تمرینی یا اتاق آنلاین را انتخاب کن.</div>
-<div class="note">نسخه آزمایشی موبایل · برای بازی آنلاین هر دو نفر باید اینترنت داشته باشند. گرافیک را از تنظیمات مرورگر دستگاه می‌توان محدود کرد.</div>
-</div></div>
-<div id="hud">
-<div id="top"><div class="pill" id="roomLabel">MODE: TRAINING</div><div class="pill" id="score">0 : 0</div><div class="pill" id="stats">HP 100 · AMMO 30/90</div></div>
-<button id="backmenu">منو</button><div id="cross">＋</div>
-<div id="toast"></div><div id="hint">حرکت با کلیدهای چپ · برای چرخش، سمت راست صفحه را بکش</div><div id="look"></div>
-<div id="controls"><div style="display:flex;gap:8px;align-items:end"><div class="pad"><button class="ctrl" id="forward">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="back">▼</button><button class="ctrl" id="right">▶</button></div></div><div style="display:flex;gap:8px;align-items:end"><button class="ctrl" id="reload">تعویض<br>خشاب</button><button class="ctrl" id="shoot">FIRE</button></div></div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090f16;color:#fff;font-family:Tahoma,Arial;touch-action:none}#view{position:fixed;inset:0}canvas{display:block}
+#menu{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 15%,#53616b,#18232d 48%,#070b10)}.panel{width:min(520px,100%);padding:22px;border:1px solid #ffffff36;border-radius:18px;background:#0a121beF;box-shadow:0 25px 90px #000b}
+h1{text-align:center;font-size:38px;letter-spacing:3px;margin:0;color:#f4f6f8}h1 em{font-style:normal;color:#e4ad31}.tag{text-align:center;color:#b5c0c9;letter-spacing:4px;font-size:10px;margin:5px 0 15px}
+.banner{height:135px;border-radius:12px;background:linear-gradient(110deg,#293943,#647078 48%,#202a31);position:relative;overflow:hidden;border:1px solid #77838b}.banner:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 17px,#fff1 18px 19px),linear-gradient(90deg,#0008,transparent)}.banner b{position:absolute;bottom:14px;right:14px;font-size:19px}.banner small{position:absolute;right:15px;bottom:43px;color:#f3c75b}
+button,input{font:inherit;width:100%;padding:13px;border-radius:9px;margin-top:9px;border:1px solid #566574}button{background:#d5a52f;color:#151a1e;font-weight:bold;border:0}button.alt{background:#253746;color:#fff;border:1px solid #526777}input{background:#09121b;color:white;text-align:center;letter-spacing:2px}
+#status{min-height:30px;text-align:center;color:#f0c85b;font-size:12px;line-height:1.7;margin-top:8px}.disclaimer{font-size:10px;color:#aebac3;line-height:1.8;text-align:center;margin-top:8px}
+#hud{display:none;position:fixed;inset:0;z-index:2;pointer-events:none}.top{position:absolute;top:env(safe-area-inset-top);left:8px;right:8px;display:flex;justify-content:space-between;direction:ltr}.badge{padding:8px 10px;background:#07111bdc;border:1px solid #ffffff2c;border-radius:8px;font-size:11px}
+#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:23px;text-shadow:0 1px 5px black}
+#controls{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;pointer-events:auto;direction:ltr}.pad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:44px 44px;gap:5px}.ctl{margin:0;padding:4px;background:#102231d9;color:white;border:1px solid #d9e8f077;border-radius:11px;touch-action:none;font-size:17px}#up{grid-column:2}#lt{grid-column:1}#dn{grid-column:2}#rt{grid-column:3}
+#fire{width:72px;height:72px;border-radius:50%;background:#a93b2d;color:white;border:2px solid #ffc3a8}#reload{width:58px;height:45px;background:#263c4d;color:white;font-size:10px}
+#look{position:absolute;right:0;top:18%;width:53%;height:52%;pointer-events:auto}#quit{pointer-events:auto;position:absolute;top:52px;left:8px;width:auto;background:#243846;color:white;padding:8px 12px}
+#hint{position:absolute;bottom:115px;right:9px;background:#06101bd9;border-radius:7px;padding:6px 8px;font-size:10px}
+</style></head><body><div id="view"></div>
+<div id="menu"><div class="panel"><h1>SHADOW <em>OPS</em></h1><div class="tag">TACTICAL FPS // MOBILE</div><div class="banner"><small>OPERATION: DUST DISTRICT</small><b>ورود به منطقه عملیاتی</b></div>
+<button id="training">شروع نبرد تمرینی</button><button id="create" class="alt">ساخت اتاق آنلاین</button><input id="code" maxlength="12" placeholder="کد اتاق دوستت"><button id="join" class="alt">پیوستن به اتاق</button><div id="status">نسخه آزمایشی گرافیک واقع‌گرایانه</div><div class="disclaimer">برای اجرای بهتر، گوشی را افقی نگه دار. این نسخه نمونه مستقل CS2 نیست؛ یک پروژه FPS تحت وب است.</div></div></div>
+<div id="hud"><div class="top"><div class="badge" id="mode">TRAINING</div><div class="badge" id="score">KILLS 0</div><div class="badge" id="info">HP 100 | 30/90</div></div><button id="quit">منو</button><div id="cross">+</div><div id="hint">سمت راست را بکش تا نگاه کنی</div><div id="look"></div><div id="controls"><div class="pad"><button class="ctl" id="up">▲</button><button class="ctl" id="lt">◀</button><button class="ctl" id="dn">▼</button><button class="ctl" id="rt">▶</button></div><div style="display:flex;gap:8px;align-items:end"><button class="ctl" id="reload">خشاب</button><button id="fire">FIRE</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-(()=> {
-const $=id=>document.getElementById(id);
-let scene,camera,renderer,peer,conn,roomCode='',started=false,online=false,host=false,otherMesh,enemyBullets=[];
-let me={x:0,z:7,yaw:0,pitch:0,hp:100,ammo:30,reserve:90,score:0},enemy={x:0,z:-7,yaw:Math.PI,hp:100,score:0};
-let keys={},lastSend=0,lastShot=0,reloading=false,moveSpeed=0.12,lookPointer=null,prevX=0,prevY=0,clock;
+(()=>{const $=x=>document.getElementById(x);let scene,camera,renderer,clock,started=false,peer,conn,online=false,other=null,bot=[],walls=[],keys={},yaw=0,pitch=0,px=0,py=0,lookId=null,lastSend=0,lastFire=0,reloadBusy=false,kills=0,hp=100,ammo=30,reserve=90,me={x:0,z:12},enemy={x:0,z:-12};
 const mat=(c,r=.85,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
-function status(t){$('status').textContent=t}
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
-function box(x,y,z,sx,sy,sz,material){let o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);o.position.set(x,y,z);scene.add(o);return o}
-function buildWorld(){
- scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb9);scene.fog=new THREE.Fog(0x9aabb9,32,95);
- camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,140);
- renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;$('game').appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0xdcecff,0x343b42,2.0));
- let sun=new THREE.DirectionalLight(0xffe0b4,3.1);sun.position.set(-10,22,8);scene.add(sun);
- let fill=new THREE.DirectionalLight(0x8eb8df,1.1);fill.position.set(12,8,-12);scene.add(fill);
- const concrete=mat(0x7b8587),dark=mat(0x3e4a50),sand=mat(0xb6a78b),crate=mat(0x795c3b),metal=mat(0x39464d,.48,.65),yellow=mat(0xe3b52d),floor=mat(0x777c77),blue=mat(0x324c62),red=mat(0x8b3d32);
- box(0,-.25,0,46,.5,46,floor);
- // perimeter and buildings
- box(0,2,-23,46,4,1.2,dark);box(0,2,23,46,4,1.2,dark);box(-23,2,0,1.2,4,46,dark);box(23,2,0,1.2,4,46,dark);
- box(-15,2,-13,9,4,9,concrete);box(15,2,13,9,4,9,concrete);
- box(-15,4.1,-13,9.3,.25,9.3,metal);box(15,4.1,13,9.3,.25,9.3,metal);
- // center warehouse walls and door frame
- box(0,1.8,-11,11,3.6,1.1,dark);box(-5.6,1.8,-5,1,3.6,12,concrete);box(5.6,1.8,-5,1,3.6,12,concrete);
- box(0,3.7,-5,12,.35,12,metal);
- // shipping containers
- box(-9,1.3,5,7,2.6,3.2,blue);box(9,1.3,-5,7,2.6,3.2,red);
- // crates and barriers
- for(const [x,z] of [[-5,1],[5,5],[-12,-3],[12,7],[-2,-16],[3,15],[15,-13],[-15,14]]){
-   box(x,.85,z,2.2,1.7,2.2,crate);
-   for(let yy=.25;yy<1.6;yy+=.55)box(x,yy,z+1.12,2.15,.06,.06,yellow);
+function tex(base,kind){let c=document.createElement('canvas');c.width=c.height=256;let g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,256,256);for(let i=0;i<2500;i++){let v=Math.random()*55;g.fillStyle=`rgba(${v},${v},${v},${Math.random()*.22})`;g.fillRect(Math.random()*256,Math.random()*256,1+Math.random()*4,1+Math.random()*4)}if(kind==='brick'){g.strokeStyle='#2229';for(let y=0;y<256;y+=32){g.beginPath();g.moveTo(0,y);g.lineTo(256,y);g.stroke();for(let x=(y/32%2)*32;x<256;x+=64){g.beginPath();g.moveTo(x,y);g.lineTo(x,y+32);g.stroke()}}}if(kind==='concrete'){for(let i=0;i<70;i++){g.fillStyle='#2222';g.fillRect(Math.random()*256,Math.random()*256,Math.random()*18,Math.random()*3)}}let t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);t.colorSpace=THREE.SRGBColorSpace;return t}
+function textured(color,kind){return new THREE.MeshStandardMaterial({map:tex(color,kind),roughness:.96})}
+function addBox(x,y,z,w,h,d,m,collide=true){let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(collide)walls.push({x,z,w,d});return o}
+function soldier(color){let g=new THREE.Group(),cloth=mat(color),dark=mat(0x22292c),skin=mat(0x9b8066),vest=mat(0x3b4039);let torso=new THREE.Mesh(new THREE.CapsuleGeometry(.34,.72,5,8),cloth);torso.position.y=1.15;torso.castShadow=true;g.add(torso);let chest=new THREE.Mesh(new THREE.BoxGeometry(.62,.48,.38),vest);chest.position.set(0,1.3,-.04);g.add(chest);let head=new THREE.Mesh(new THREE.SphereGeometry(.23,16,12),skin);head.position.y=1.83;g.add(head);let helmet=new THREE.Mesh(new THREE.SphereGeometry(.255,16,10,0,Math.PI*2,0,Math.PI*.55),dark);helmet.position.y=1.91;g.add(helmet);for(let x of [-.17,.17]){let leg=new THREE.Mesh(new THREE.CapsuleGeometry(.13,.58,4,7),dark);leg.position.set(x,.43,0);g.add(leg);let arm=new THREE.Mesh(new THREE.CapsuleGeometry(.11,.5,4,7),cloth);arm.position.set(x*.0+(x<0?-.42:.42),1.22,-.12);arm.rotation.z=x<0?-.28:.28;g.add(arm)}let gun=new THREE.Group();let body=new THREE.Mesh(new THREE.BoxGeometry(.16,.16,.65),mat(0x252b2c,.42,.7));body.position.z=-.28;gun.add(body);let barrel=new THREE.Mesh(new THREE.CylinderGeometry(.027,.027,.48,10),mat(0x111719,.4,.8));barrel.rotation.x=Math.PI/2;barrel.position.set(0,.015,-.78);gun.add(barrel);let mag=new THREE.Mesh(new THREE.BoxGeometry(.09,.24,.13),dark);mag.position.set(0,-.17,-.27);gun.add(mag);gun.position.set(.31,1.25,-.37);g.add(gun);return g}
+function world(){scene=new THREE.Scene();scene.background=new THREE.Color(0x9da9ad);scene.fog=new THREE.Fog(0x9da9ad,35,105);camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,180);renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('view').appendChild(renderer.domElement);scene.add(new THREE.HemisphereLight(0xe5efff,0x45413a,1.5));let sun=new THREE.DirectionalLight(0xffe3bd,3.1);sun.position.set(-18,28,12);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-35;sun.shadow.camera.right=35;sun.shadow.camera.top=35;sun.shadow.camera.bottom=-35;scene.add(sun);scene.add(new THREE.AmbientLight(0x71849a,.45));
+let asphalt=textured('#555b5d','concrete'),brick=textured('#81786d','brick'),cement=textured('#99958b','concrete'),metal=mat(0x394349,.45,.65),yellow=mat(0xd6a72e),wood=textured('#71563a','brick');addBox(0,-.35,0,62,.7,62,asphalt,false);
+for(let z of [-30,30])addBox(0,2,z,62,4,1,brick);for(let x of [-30,30])addBox(x,2,0,1,4,62,brick);
+ // city blocks with windows
+ for(let [x,z,w,d,h] of [[-20,-17,14,13,10],[20,-18,13,14,13],[-21,18,13,15,12],[21,18,14,13,9],[-7,-25,9,7,7],[8,25,10,7,8]]){
+ addBox(x,h/2,z,w,h,d,cement);addBox(x,h+.12,z,w+.3,.25,d+.3,metal,false);
+ for(let yy=2;yy<h-1.5;yy+=2.4)for(let xx=-w/2+1.4;xx<w/2-1;xx+=2.5){let win=addBox(x+xx,yy,z-d/2-.015,1.1,1,.06,mat(0x283a43,.25,.35),false);let frame=addBox(x+xx,yy,z-d/2-.06,1.28,1.18,.05,metal,false)}
  }
- // barrels
- for(const [x,z] of [[-7,-7],[7,10],[-17,4],[17,-4]]){
-  let b=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,1.2,16),metal);b.position.set(x,.6,z);scene.add(b);
-  let ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.045,8,20),yellow);ring.rotation.x=Math.PI/2;ring.position.set(x,.8,z);scene.add(ring);
- }
- // tactical lane markings
- for(let z=-18;z<=18;z+=6)box(0,-.005,z,30,.015,.045,yellow);
- // cover props, lamps
- for(let x of [-18,18]){let pole=box(x,3,0,.18,6,.18,metal);let lamp=box(x,5.8,0,.7,.18,.7,yellow)}
- // sky/ambient dust specks
- for(let i=0;i<35;i++){let p=new THREE.Mesh(new THREE.SphereGeometry(.035,5,5),new THREE.MeshBasicMaterial({color:0xd8c7a0,transparent:true,opacity:.35}));p.position.set((Math.random()-.5)*38,Math.random()*4,(Math.random()-.5)*38);scene.add(p)}
- // opponent avatar
- otherMesh=new THREE.Group();
- let body=new THREE.Mesh(new THREE.BoxGeometry(.7,1.1,.42),blue);body.position.y=.95;otherMesh.add(body);
- let head=new THREE.Mesh(new THREE.SphereGeometry(.27,12,10),mat(0x303b42));head.position.y=1.7;otherMesh.add(head);
- let gun=new THREE.Mesh(new THREE.BoxGeometry(.15,.16,.85),metal);gun.position.set(.35,1.25,-.25);otherMesh.add(gun);
- otherMesh.position.set(enemy.x,0,enemy.z);scene.add(otherMesh);
- // player weapon model in camera space
- let weapon=new THREE.Group();
- let gunBody=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.72),mat(0x20282c,.4,.7));gunBody.position.set(.34,-.27,-.55);weapon.add(gunBody);
- let barrel=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.5,10),metal);barrel.rotation.x=Math.PI/2;barrel.position.set(.34,-.23,-1.02);weapon.add(barrel);
- let stock=new THREE.Mesh(new THREE.BoxGeometry(.16,.22,.28),mat(0x694a2e));stock.position.set(.34,-.28,-.12);weapon.add(stock);
- camera.add(weapon);scene.add(camera);
-}
-function startGame(mode){
- if(started)return;
- if(!window.THREE){status('کتابخانه سه‌بعدی بارگذاری نشد؛ اینترنت را بررسی کن.');return}
- $('menu').style.display='none';$('hud').style.display='block';started=true;buildWorld();clock=new THREE.Clock();animate();
- $('roomLabel').textContent=mode;
-}
-function animate(){
- if(!started)return;requestAnimationFrame(animate);
- let dt=Math.min(clock.getDelta(),.04),f=0,s=0;
- if(keys.forward||keys.KeyW)f+=1;if(keys.back||keys.KeyS)f-=1;if(keys.left||keys.KeyA)s-=1;if(keys.right||keys.KeyD)s+=1;
- let speed=moveSpeed*(keys.shift?1.35:1);
- me.x+=Math.sin(me.yaw)*f*speed+Math.cos(me.yaw)*s*speed;
- me.z-=Math.cos(me.yaw)*f*speed-Math.sin(me.yaw)*s*speed;
- me.x=Math.max(-20,Math.min(20,me.x));me.z=Math.max(-20,Math.min(20,me.z));
- camera.position.set(me.x,1.62,me.z);camera.rotation.order='YXZ';camera.rotation.y=me.yaw;camera.rotation.x=me.pitch;
- if(online&&conn&&conn.open&&performance.now()-lastSend>45){conn.send({t:'p',x:me.x,z:me.z,yaw:me.yaw});lastSend=performance.now()}
- if(otherMesh){otherMesh.position.set(enemy.x,0,enemy.z);otherMesh.rotation.y=enemy.yaw}
- for(let i=enemyBullets.length-1;i>=0;i--){let b=enemyBullets[i];b.position.add(b.userData.v);if(b.position.distanceTo(camera.position)>40){scene.remove(b);enemyBullets.splice(i,1)}else if(b.position.distanceTo(camera.position)<.7){me.hp=Math.max(0,me.hp-5);scene.remove(b);enemyBullets.splice(i,1);$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`}}
- renderer.render(scene,camera);
-}
-function shoot(){
- if(!started||performance.now()-lastShot<170||reloading)return;lastShot=performance.now();
- if(me.ammo<=0){toast('خشاب خالی است؛ reload را بزن');return}
- me.ammo--; $('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`;
- // muzzle flash
- let flash=new THREE.PointLight(0xffc45a,2,3);flash.position.set(me.x+Math.sin(me.yaw)*.8,1.5,me.z-Math.cos(me.yaw)*.8);scene.add(flash);setTimeout(()=>scene.remove(flash),55);
- if(online&&conn&&conn.open)conn.send({t:'shot',x:me.x,z:me.z,yaw:me.yaw});
- else if(otherMesh){let dx=enemy.x-me.x,dz=enemy.z-me.z,dist=Math.hypot(dx,dz),angle=Math.atan2(dx,-dz);let diff=Math.atan2(Math.sin(angle-me.yaw),Math.cos(angle-me.yaw));if(dist<19&&Math.abs(diff)<.12){enemy.hp-=25;toast('اصابت تمرینی!');if(enemy.hp<=0){enemy.hp=100;me.score++;$('score').textContent=`${me.score} : ${enemy.score}`;enemy.x=(Math.random()-.5)*18;enemy.z=(Math.random()-.5)*18}}}
-}
-function reload(){if(reloading||me.ammo===30||me.reserve<=0)return;reloading=true;toast('در حال تعویض خشاب...');setTimeout(()=>{let n=Math.min(30-me.ammo,me.reserve);me.ammo+=n;me.reserve-=n;reloading=false;$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`},1200)}
-function bindHold(id,key){let el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;el.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,()=>keys[key]=false))}
-['forward','back','left','right'].forEach((id)=>bindHold(id,id));
-$('shoot').addEventListener('pointerdown',e=>{e.preventDefault();shoot()});$('reload').onclick=reload;
-$('look').addEventListener('pointerdown',e=>{lookPointer=e.pointerId;prevX=e.clientX;prevY=e.clientY;$('look').setPointerCapture(e.pointerId)});
-$('look').addEventListener('pointermove',e=>{if(lookPointer!==e.pointerId)return;let dx=e.clientX-prevX,dy=e.clientY-prevY;prevX=e.clientX;prevY=e.clientY;me.yaw-=dx*.006;me.pitch=Math.max(-1.1,Math.min(1.1,me.pitch-dy*.004)});
-['pointerup','pointercancel','lostpointercapture'].forEach(ev=>$('look').addEventListener(ev,()=>lookPointer=null));
-addEventListener('keydown',e=>{keys['KeyW']=e.code==='KeyW'||keys['KeyW'];keys['KeyS']=e.code==='KeyS'||keys['KeyS'];keys['KeyA']=e.code==='KeyA'||keys['KeyA'];keys['KeyD']=e.code==='KeyD'||keys['KeyD'];if(e.code==='Space')shoot();if(e.code==='KeyR')reload()});
-addEventListener('keyup',e=>{if(e.code==='KeyW')keys['KeyW']=false;if(e.code==='KeyS')keys['KeyS']=false;if(e.code==='KeyA')keys['KeyA']=false;if(e.code==='KeyD')keys['KeyD']=false});
-$('solo').onclick=()=>startGame('TRAINING MODE');
-$('create').onclick=()=>{
- if(!window.Peer){status('اتصال آنلاین بارگذاری نشد؛ حالت تمرینی را اجرا کن.');return}
- roomCode='OPS'+Math.random().toString(36).slice(2,6).toUpperCase();host=true;
- peer=new Peer(roomCode);status('در حال ساخت اتاق...');
- peer.on('open',id=>{status('کد اتاق: '+id+' — این کد را برای دوستت بفرست.');$('room').value=id});
- peer.on('connection',c=>{conn=c;setupConn();startGame('ONLINE · HOST')});
- peer.on('error',e=>status('خطای اتصال: '+e.type+' — دوباره تلاش کن.'));
-};
-$('join').onclick=()=>{
- let code=$('room').value.trim().toUpperCase();if(!code){status('اول کد اتاق دوستت را وارد کن.');return}
- if(!window.Peer){status('اتصال آنلاین بارگذاری نشد.');return}
- peer=new Peer();status('در حال اتصال به اتاق '+code+'...');
- peer.on('open',()=>{conn=peer.connect(code);conn.on('open',()=>{setupConn();startGame('ONLINE · GUEST')})});
- peer.on('error',e=>status('اتصال برقرار نشد: '+e.type+' — کد و اینترنت را بررسی کن.'));
-};
-function setupConn(){online=true;conn.on('data',d=>{if(d.t==='p'){enemy.x=d.x;enemy.z=d.z;enemy.yaw=d.yaw}if(d.t==='shot'){let dx=me.x-d.x,dz=me.z-d.z,dist=Math.hypot(dx,dz),a=Math.atan2(dx,-dz),diff=Math.atan2(Math.sin(a-d.yaw),Math.cos(a-d.yaw));if(dist<18&&Math.abs(diff)<.16){me.hp=Math.max(0,me.hp-10);$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`;toast('ضربه خوردی!')}}});conn.on('close',()=>toast('ارتباط با بازیکن قطع شد.'))}
-$('backmenu').onclick=()=>location.reload();
-addEventListener('resize',()=>{if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+ // alleys, warehouse, cover
+ addBox(0,2,-14,17,4,1.2,brick);addBox(-8.5,2,-7,1.2,14,brick);addBox(8.5,2,-7,1.2,14,brick);
+ for(let [x,z] of [[-5,4],[5,9],[-13,-1],[13,4],[-3,-19],[3,19],[-17,10],[17,-10]]){addBox(x,.9,z,2.4,1.8,2.1,wood);addBox(x,.92,z+1.08,2.35,.08,.05,yellow,false)}
+ for(let [x,z] of [[-10,-10],[10,13],[-24,3],[24,-4]]){let drum=new THREE.Mesh(new THREE.CylinderGeometry(.45,.45,1.3,18),metal);drum.position.set(x,.65,z);drum.castShadow=true;scene.add(drum)}
+ // road markings and street lights
+ for(let z=-25;z<=25;z+=7)addBox(0,.008,z,20,.02,.09,yellow,false);
+ for(let x of [-26,26]){addBox(x,4,0,.16,8,.16,metal,false);addBox(x,8,0,.9,.18,.9,yellow,false)}
+ // distant skyline silhouettes
+ for(let i=0;i<18;i++){let x=(Math.random()-.5)*90,z=(Math.random()-.5)*90;if(Math.abs(x)<32&&Math.abs(z)<32)continue;addBox(x,3+Math.random()*7,z,5+Math.random()*7,6+Math.random()*14,5+Math.random()*7,brick,false)}
+ other=soldier(0x3b4c42);other.position.set(enemy.x,0,enemy.z);scene.add(other);
+ if(!online){for(let i=0;i<4;i++){let b=soldier(i%2?0x5c5544:0x35463d);b.position.set((Math.random()-.5)*25,0,-8-Math.random()*16);b.userData={hp:100,fire:0};scene.add(b);bot.push(b)}}
+ let gun=soldier(0x3d493e); // player-view weapon only
+ let weapon=new THREE.Group();let base=new THREE.Mesh(new THREE.BoxGeometry(.19,.19,.72),mat(0x222a2c,.35,.7));base.position.set(.34,-.29,-.55);weapon.add(base);let barrel=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.62,12),metal);barrel.rotation.x=Math.PI/2;barrel.position.set(.34,-.25,-1.05);weapon.add(barrel);let sight=new THREE.Mesh(new THREE.BoxGeometry(.1,.09,.18),mat(0x111819,.3,.5));sight.position.set(.34,-.16,-.55);weapon.add(sight);camera.add(weapon);scene.add(camera)}
+function start(mode){if(started)return;if(!window.THREE){$('status').textContent='Three.js لود نشد؛ اینترنت را بررسی کن.';return}started=true;$('menu').style.display='none';$('hud').style.display='block';$('mode').textContent=mode;world();clock=new THREE.Clock();loop()}
+function loop(){if(!started)return;requestAnimationFrame(loop);let dt=Math.min(clock.getDelta(),.04),f=(keys.up?1:0)-(keys.dn?1:0),s=(keys.rt?1:0)-(keys.lt?1:0);let v=.16;me.x+=Math.sin(yaw)*f*v+Math.cos(yaw)*s*v;me.z-=Math.cos(yaw)*f*v-Math.sin(yaw)*s*v;me.x=THREE.MathUtils.clamp(me.x,-28,28);me.z=THREE.MathUtils.clamp(me.z,-28,28);camera.position.set(me.x,1.68,me.z);camera.rotation.order='YXZ';camera.rotation.set(pitch,yaw,0);
+bot.forEach(b=>{let dx=me.x-b.position.x,dz=me.z-b.position.z,dist=Math.hypot(dx,dz);if(dist>5&&dist<26){b.position.x+=dx/dist*.018;b.position.z+=dz/dist*.018;b.rotation.y=Math.atan2(-dx,-dz)}b.userData.fire-=dt;if(dist<15&&b.userData.fire<=0){b.userData.fire=1.8+Math.random();if(Math.random()<.28){hp=Math.max(0,hp-4);updateInfo()}}});
+if(online&&conn?.open&&performance.now()-lastSend>60){conn.send({t:'p',x:me.x,z:me.z,yaw});lastSend=performance.now()}
+if(other){other.position.set(enemy.x,0,enemy.z);other.rotation.y=enemy.yaw}
+renderer.render(scene,camera)}
+function updateInfo(){$('info').textContent=`HP ${hp} | ${ammo}/${reserve}`}
+function fire(){if(!started||reloadBusy||performance.now()-lastFire<180)return;lastFire=performance.now();if(ammo<=0){toast('خشاب خالی است');return}ammo--;updateInfo();let ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2(0,0),camera);let targets=bot.concat(online&&other?[other]:[]);let hits=ray.intersectObjects(targets,true);if(hits.length&&hits[0].distance<35){let target=hits[0].object;while(target.parent&&!targets.includes(target))target=target.parent;if(bot.includes(target)||targets.includes(target)){let b=target;if(bot.includes(b)){b.userData.hp-=40;if(b.userData.hp<=0){scene.remove(b);bot=bot.filter(q=>q!==b);kills++;$('score').textContent='KILLS '+kills;toast('هدف حذف شد')}}else if(conn?.open)conn.send({t:'hit'})}}}
+function toast(t){$('hint').textContent=t;setTimeout(()=>$('hint').textContent='سمت راست را بکش تا نگاه کنی',1300)}
+function reload(){if(reloadBusy||ammo===30||reserve<=0)return;reloadBusy=true;toast('تعویض خشاب...');setTimeout(()=>{let n=Math.min(30-ammo,reserve);ammo+=n;reserve-=n;reloadBusy=false;updateInfo()},1150)}
+function bind(id,k){let e=$(id);e.onpointerdown=v=>{v.preventDefault();keys[k]=true;e.setPointerCapture(v.pointerId)};['pointerup','pointercancel','lostpointercapture'].forEach(a=>e.addEventListener(a,()=>keys[k]=false))}
+[['up','up'],['dn','dn'],['lt','lt'],['rt','rt']].forEach(a=>bind(...a));$('fire').onpointerdown=fire;$('reload').onclick=reload;
+$('look').onpointerdown=e=>{lookId=e.pointerId;px=e.clientX;py=e.clientY;$('look').setPointerCapture(e.pointerId)};$('look').onpointermove=e=>{if(lookId!==e.pointerId)return;let dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;yaw-=dx*.006;pitch=THREE.MathUtils.clamp(pitch-dy*.004,-1.1,1.1)};['pointerup','pointercancel','lostpointercapture'].forEach(a=>$('look').addEventListener(a,()=>lookId=null));
+addEventListener('keydown',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code])keys[m[e.code]]=true;if(e.code==='Space')fire();if(e.code==='KeyR')reload()});addEventListener('keyup',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code])keys[m[e.code]]=false});
+$('training').onclick=()=>start('TRAINING');$('create').onclick=()=>{if(!window.Peer){$('status').textContent='سرویس آنلاین لود نشد.';return}let id='SHADOW'+Math.random().toString(36).slice(2,6).toUpperCase();peer=new Peer(id);$('status').textContent='در حال ساخت اتاق...';peer.on('open',()=>{$('code').value=id;$('status').textContent='کد اتاق: '+id+' را برای دوستت بفرست'});peer.on('connection',c=>{conn=c;wire();start('ONLINE HOST')});peer.on('error',e=>$('status').textContent='خطا: '+e.type)};
+$('join').onclick=()=>{let id=$('code').value.trim().toUpperCase();if(!id){$('status').textContent='کد اتاق را وارد کن';return}peer=new Peer();$('status').textContent='در حال اتصال...';peer.on('open',()=>{conn=peer.connect(id);conn.on('open',()=>{wire();start('ONLINE GUEST')})});peer.on('error',e=>$('status').textContent='اتصال ناموفق: '+e.type)};
+function wire(){online=true;conn.on('data',d=>{if(d.t==='p'){enemy.x=d.x;enemy.z=d.z;enemy.yaw=d.yaw}if(d.t==='hit'){hp=Math.max(0,hp-25);updateInfo()}})}
+$('quit').onclick=()=>location.reload();addEventListener('resize',()=>{if(renderer){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}});if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 })();
-</script>
-</body></html>
+</script></body></html>
