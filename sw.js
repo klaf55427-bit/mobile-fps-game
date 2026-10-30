@@ -1,1 +1,4 @@
-const C="shadow-ops-v4";const S=["./","./index.html","./manifest.json","./icon.svg"];self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(S))));self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(x=>x!==C).map(x=>caches.delete(x))))));self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(q=>{caches.open(C).then(c=>c.put(e.request,q.clone()));return q}).catch(()=>caches.match("./index.html"))))});
+const C="shadow-ops-v5";const S=["./","./index.html","./manifest.json","./icon.svg"];
+self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(S))));
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(x=>x!==C).map(x=>caches.delete(x))))));
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(q=>{if(q.ok)caches.open(C).then(c=>c.put(e.request,q.clone()));return q}).catch(()=>caches.match("./index.html"))))});
