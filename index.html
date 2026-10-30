@@ -15,9 +15,18 @@ button,input{font:inherit;width:100%;padding:13px;border-radius:9px;margin-top:9
 #fire{width:72px;height:72px;border-radius:50%;background:#a93b2d;color:white;border:2px solid #ffc3a8}#reload{width:58px;height:45px;background:#263c4d;color:white;font-size:10px}
 #look{position:absolute;right:0;top:18%;width:53%;height:52%;pointer-events:auto}#quit{pointer-events:auto;position:absolute;top:52px;left:8px;width:auto;background:#243846;color:white;padding:8px 12px}
 #hint{position:absolute;bottom:115px;right:9px;background:#06101bd9;border-radius:7px;padding:6px 8px;font-size:10px}
+
+@media (pointer:fine) and (min-width:700px){
+  #controls{display:none!important}
+  #look{display:none!important}
+  #hint{bottom:18px;right:18px;font-size:13px}
+  .panel{width:min(560px,90vw)}
+  .banner{height:170px}
+  h1{font-size:48px}
+}
 </style></head><body><div id="view"></div>
-<div id="menu"><div class="panel"><h1>SHADOW <em>OPS</em></h1><div class="tag">TACTICAL FPS // MOBILE</div><div class="banner"><small>OPERATION: DUST DISTRICT</small><b>ورود به منطقه عملیاتی</b></div>
-<button id="training">شروع نبرد تمرینی</button><button id="create" class="alt">ساخت اتاق آنلاین</button><input id="code" maxlength="12" placeholder="کد اتاق دوستت"><button id="join" class="alt">پیوستن به اتاق</button><div id="status">نسخه آزمایشی گرافیک واقع‌گرایانه</div><div class="disclaimer">برای اجرای بهتر، گوشی را افقی نگه دار. این نسخه نمونه مستقل CS2 نیست؛ یک پروژه FPS تحت وب است.</div></div></div>
+<div id="menu"><div class="panel"><h1>SHADOW <em>OPS</em></h1><div class="tag">TACTICAL FPS // MOBILE + PC</div><div class="banner"><small>OPERATION: DUST DISTRICT</small><b>ورود به منطقه عملیاتی</b></div>
+<button id="training">شروع نبرد تمرینی</button><button id="create" class="alt">ساخت اتاق آنلاین</button><input id="code" maxlength="12" placeholder="کد اتاق دوستت"><button id="join" class="alt">پیوستن به اتاق</button><div id="status">نسخه آزمایشی گرافیک واقع‌گرایانه</div><div class="disclaimer">کنترل کامپیوتر: حرکت W A S D | نگاه با ماوس | شلیک کلیک چپ | خشاب R | قفل/آزادکردن ماوس با کلیک داخل بازی و Esc. موبایل: گوشی را افقی نگه دار. این پروژه نمونه مستقل CS2 نیست.</div></div></div>
 <div id="hud"><div class="top"><div class="badge" id="mode">TRAINING</div><div class="badge" id="score">KILLS 0</div><div class="badge" id="info">HP 100 | 30/90</div></div><button id="quit">منو</button><div id="cross">+</div><div id="hint">سمت راست را بکش تا نگاه کنی</div><div id="look"></div><div id="controls"><div class="pad"><button class="ctl" id="up">▲</button><button class="ctl" id="lt">◀</button><button class="ctl" id="dn">▼</button><button class="ctl" id="rt">▶</button></div><div style="display:flex;gap:8px;align-items:end"><button class="ctl" id="reload">خشاب</button><button id="fire">FIRE</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -77,8 +86,25 @@ function toast(t){$('hint').textContent=t;setTimeout(()=>$('hint').textContent='
 function reload(){if(reloadBusy||ammo===30||reserve<=0)return;reloadBusy=true;toast('تعویض خشاب...');setTimeout(()=>{let n=Math.min(30-ammo,reserve);ammo+=n;reserve-=n;reloadBusy=false;updateInfo()},1150)}
 function bind(id,k){let e=$(id);e.onpointerdown=v=>{v.preventDefault();keys[k]=true;e.setPointerCapture(v.pointerId)};['pointerup','pointercancel','lostpointercapture'].forEach(a=>e.addEventListener(a,()=>keys[k]=false))}
 [['up','up'],['dn','dn'],['lt','lt'],['rt','rt']].forEach(a=>bind(...a));$('fire').onpointerdown=fire;$('reload').onclick=reload;
+renderer.domElement.addEventListener('mousedown',e=>{
+ if(started && matchMedia('(pointer:fine)').matches && e.button===0 && document.pointerLockElement===renderer.domElement)fire();
+});
+
 $('look').onpointerdown=e=>{lookId=e.pointerId;px=e.clientX;py=e.clientY;$('look').setPointerCapture(e.pointerId)};$('look').onpointermove=e=>{if(lookId!==e.pointerId)return;let dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;yaw-=dx*.006;pitch=THREE.MathUtils.clamp(pitch+dy*.004,-1.1,1.1)};['pointerup','pointercancel','lostpointercapture'].forEach(a=>$('look').addEventListener(a,()=>lookId=null));
-addEventListener('keydown',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code])keys[m[e.code]]=true;if(e.code==='Space')fire();if(e.code==='KeyR')reload()});addEventListener('keyup',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code])keys[m[e.code]]=false});
+addEventListener('keydown',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code]){keys[m[e.code]]=true;e.preventDefault()}if(e.code==='Space'){fire();e.preventDefault()}if(e.code==='KeyR'){reload();e.preventDefault()}});addEventListener('keyup',e=>{let m={KeyW:'up',KeyS:'dn',KeyA:'lt',KeyD:'rt'};if(m[e.code])keys[m[e.code]]=false});
+// Desktop mouse controls: click the game canvas to capture pointer; Esc releases it.
+renderer.domElement.addEventListener('click',()=>{
+ if(started && matchMedia('(pointer:fine)').matches && document.pointerLockElement!==renderer.domElement){
+   renderer.domElement.requestPointerLock?.();
+ }
+});
+document.addEventListener('mousemove',e=>{
+ if(started && document.pointerLockElement===renderer.domElement){
+   yaw-=e.movementX*.0022;
+   pitch=THREE.MathUtils.clamp(pitch+e.movementY*.0022,-1.1,1.1);
+ }
+});
+
 $('training').onclick=()=>start('TRAINING');$('create').onclick=()=>{if(!window.Peer){$('status').textContent='سرویس آنلاین لود نشد.';return}let id='SHADOW'+Math.random().toString(36).slice(2,6).toUpperCase();peer=new Peer(id);$('status').textContent='در حال ساخت اتاق...';peer.on('open',()=>{$('code').value=id;$('status').textContent='کد اتاق: '+id+' را برای دوستت بفرست'});peer.on('connection',c=>{conn=c;wire();start('ONLINE HOST')});peer.on('error',e=>$('status').textContent='خطا: '+e.type)};
 $('join').onclick=()=>{let id=$('code').value.trim().toUpperCase();if(!id){$('status').textContent='کد اتاق را وارد کن';return}peer=new Peer();$('status').textContent='در حال اتصال...';peer.on('open',()=>{conn=peer.connect(id);conn.on('open',()=>{wire();start('ONLINE GUEST')})});peer.on('error',e=>$('status').textContent='اتصال ناموفق: '+e.type)};
 function wire(){online=true;conn.on('data',d=>{if(d.t==='p'){enemy.x=d.x;enemy.z=d.z;enemy.yaw=d.yaw}if(d.t==='hit'){hp=Math.max(0,hp-25);updateInfo()}})}
