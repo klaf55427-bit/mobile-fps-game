@@ -1,174 +1,186 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#101820">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>میدان تاکتیکی دونفره</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a1119">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>SHADOW OPS MOBILE</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;color:#fff;font-family:Tahoma,Arial,sans-serif;touch-action:none}
+:root{--gold:#ffc928;--bg:#08111b;--panel:#111e2b;--line:#34495a;--muted:#aab8c5}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#08111b;color:#fff;font-family:Tahoma,Arial,sans-serif;touch-action:none}
 #game{position:fixed;inset:0}canvas{display:block}
-#menu{position:fixed;z-index:5;inset:0;background:linear-gradient(#101b2ceF,#080d14f7);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
-.card{width:min(460px,100%);background:#141d27;border:1px solid #52616d;border-radius:18px;padding:20px;box-shadow:0 12px 40px #0008}
-h1{font-size:23px;margin:0 0 10px}p{line-height:1.8;color:#d0e0e8;font-size:14px}
-input,button{font:inherit;border-radius:10px;border:0;padding:13px;width:100%;margin-top:9px}
-input{background:#0b151c;color:#fff;border:1px solid #45606c;text-transform:uppercase}
-button{background:#24a56a;color:#fff;font-weight:bold}button.secondary{background:#365261}
-#status{font-size:13px;color:#ffd37a;min-height:30px;margin-top:10px;line-height:1.7}
+#menu{position:fixed;z-index:5;inset:0;overflow:auto;background:radial-gradient(ellipse at 50% 0%,#314457 0,#111e2b 45%,#070c12 100%);display:flex;align-items:center;justify-content:center;padding:18px}
+.card{width:min(540px,100%);padding:22px;border:1px solid #60718166;border-radius:22px;background:linear-gradient(145deg,#172737f2,#0a121cf5);box-shadow:0 24px 80px #000b}
+.brand{font-size:clamp(28px,7vw,44px);font-weight:1000;letter-spacing:2px;text-align:center;color:#fff;text-shadow:0 4px 20px #000}.brand span{color:var(--gold)}
+.sub{text-align:center;color:#b8c6d1;font-size:12px;letter-spacing:4px;margin:2px 0 15px}
+.hero{height:135px;border-radius:15px;margin:12px 0 16px;overflow:hidden;position:relative;background:linear-gradient(110deg,#182c3b,#344657 45%,#141c25);border:1px solid #506273}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0000,#0008),repeating-linear-gradient(135deg,transparent 0 25px,#ffffff08 26px 28px)}
+.hero strong{position:absolute;bottom:14px;right:16px;font-size:18px}.hero small{position:absolute;bottom:43px;right:16px;color:#ffd65e}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.feature{background:#0a1520;border:1px solid #2e4354;border-radius:12px;padding:10px 5px;text-align:center;font-size:11px;color:#d9e2e9}.feature b{display:block;color:var(--gold);font-size:18px;margin-bottom:5px}
+input,button{font:inherit;border-radius:11px;border:1px solid #415669;padding:13px;width:100%;margin-top:9px}
+input{background:#07111b;color:white;text-align:center;text-transform:uppercase;letter-spacing:3px}
+button{background:var(--gold);color:#161b20;font-weight:900;border:0;cursor:pointer}
+button.secondary{background:#24394b;color:#fff;border:1px solid #526b7e}
+#status{font-size:12px;color:#ffd56b;min-height:34px;line-height:1.8;margin-top:10px;text-align:center}
+.note{font-size:11px;line-height:1.8;color:#91a2b1;text-align:center;margin-top:12px}
 #hud{position:fixed;z-index:2;inset:0;pointer-events:none;display:none}
-#top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.pill{background:#071018c9;padding:9px 12px;border-radius:10px;font-size:13px}
-#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:25px;text-shadow:0 1px 4px #000}
-#controls{position:absolute;bottom:16px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;pointer-events:auto;direction:ltr}
-.pad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:46px 46px;gap:5px}
-.ctrl{background:#10212bd9;border:1px solid #a9d6e377;color:white;border-radius:13px;font-size:19px;padding:8px;margin:0;touch-action:none}
+#top{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;direction:ltr}
+.pill{background:#07111bdc;border:1px solid #ffffff24;padding:8px 10px;border-radius:10px;font-size:11px;backdrop-filter:blur(8px)}
+#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:25px;color:#fff;text-shadow:0 1px 5px #000}
+#controls{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;pointer-events:auto;direction:ltr}
+.pad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:44px 44px;gap:5px}
+.ctrl{background:#102333d9;border:1px solid #d6e7f066;color:white;border-radius:13px;font-size:18px;padding:5px;margin:0;touch-action:none}
 #forward{grid-column:2;grid-row:1}#left{grid-column:1;grid-row:2}#back{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
-#shoot{width:78px;height:78px;border-radius:50%;background:#c84535e8;border:2px solid #ffd4c9;font-size:15px}
-#look{position:absolute;right:0;top:24%;width:48%;height:43%;pointer-events:auto}
-#hint{position:absolute;bottom:120px;left:10px;background:#071018b8;padding:7px;border-radius:8px;font-size:11px;direction:rtl;max-width:70%}
-#backmenu{pointer-events:auto;position:absolute;top:58px;left:10px;width:auto;padding:8px 11px;background:#263d4a}
-@media(min-width:700px){.pad{transform:scale(1.15);transform-origin:bottom left}}
+#shoot{width:74px;height:74px;border-radius:50%;background:#b83d32eF;border:2px solid #ffb6a8;color:white;font-size:13px}
+#reload{width:58px;height:48px;background:#344b5d;color:white;font-size:11px}
+#look{position:absolute;right:0;top:20%;width:52%;height:48%;pointer-events:auto}
+#hint{position:absolute;bottom:116px;right:10px;background:#07111bd9;padding:7px 10px;border-radius:8px;font-size:10px;direction:rtl;color:#d7e2e9}
+#backmenu{pointer-events:auto;position:absolute;top:58px;left:10px;width:auto;padding:8px 11px;background:#263d4a;color:#fff}
+#toast{position:absolute;top:78px;left:50%;transform:translateX(-50%);background:#08131ddd;border:1px solid #ffffff22;border-radius:9px;padding:8px 12px;font-size:11px;display:none}
+@media(min-width:800px){#controls{max-width:900px;margin:auto}.pad{transform:scale(1.2);transform-origin:bottom left}}
 </style>
 </head>
 <body>
 <div id="game"></div>
 <div id="menu"><div class="card">
-<h1>🎯 میدان تاکتیکی | نبرد دونفره</h1>
-<p>سبک شوتر تاکتیکی با نقشه صنعتی، سنگر، جعبه، نشانه‌گیر و سلاح اول‌شخص. یک نفر اتاق می‌سازد و کد را برای دوستش می‌فرستد. این هنوز نسخه آزمایشی است؛ سیستم برخورد و آسیب کامل مثل Counter-Strike ندارد.</p>
-<button id="create">ساخت اتاق جدید</button>
-<input id="room" placeholder="کد اتاق دوستت" maxlength="8" autocomplete="off">
+<div class="brand">SHADOW <span>OPS</span></div><div class="sub">MOBILE · TACTICAL ARENA</div>
+<div class="hero"><small>OPERATIONS // 01</small><strong>نبرد تاکتیکی؛ آماده‌ای؟</strong></div>
+<div class="features">
+<div class="feature"><b>✦</b>محیط سه‌بعدی</div><div class="feature"><b>◎</b>کنترل لمسی</div><div class="feature"><b>⌁</b>اتاق دونفره آنلاین</div>
+</div>
+<button id="solo">شروع تمرینی</button>
+<button id="create" class="secondary">ساخت اتاق آنلاین</button>
+<input id="room" maxlength="8" placeholder="کد اتاق دوستت">
 <button id="join" class="secondary">ورود به اتاق</button>
-<div id="status">ابتدا یک اتاق بساز یا کد دوستت را وارد کن.</div>
+<div id="status">برای شروع، حالت تمرینی یا اتاق آنلاین را انتخاب کن.</div>
+<div class="note">نسخه آزمایشی موبایل · برای بازی آنلاین هر دو نفر باید اینترنت داشته باشند. گرافیک را از تنظیمات مرورگر دستگاه می‌توان محدود کرد.</div>
 </div></div>
 <div id="hud">
-<div id="top"><div class="pill" id="roomLabel">اتاق: —</div><div class="pill" id="score">امتیاز: 0 - 0</div><div class="pill" id="stats">سلامت 100 | مهمات 30/90</div></div>
-<button id="backmenu">منو</button><div id="cross">⌖</div><div id="weaponLabel" style="position:absolute;right:14px;bottom:112px;background:#071018b8;padding:7px 10px;border-radius:8px;font-size:12px">RIFLE · AUTO</div>
-<div id="hint">حرکت: دکمه‌های سمت چپ · نگاه: انگشت را سمت راست بکش</div><div id="look"></div>
-<div id="controls"><div class="pad">
-<button class="ctrl" id="forward">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="back">▼</button><button class="ctrl" id="right">▶</button>
-</div><button class="ctrl" id="shoot">شلیک</button></div>
+<div id="top"><div class="pill" id="roomLabel">MODE: TRAINING</div><div class="pill" id="score">0 : 0</div><div class="pill" id="stats">HP 100 · AMMO 30/90</div></div>
+<button id="backmenu">منو</button><div id="cross">＋</div>
+<div id="toast"></div><div id="hint">حرکت با کلیدهای چپ · برای چرخش، سمت راست صفحه را بکش</div><div id="look"></div>
+<div id="controls"><div style="display:flex;gap:8px;align-items:end"><div class="pad"><button class="ctrl" id="forward">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="back">▼</button><button class="ctrl" id="right">▶</button></div></div><div style="display:flex;gap:8px;align-items:end"><button class="ctrl" id="reload">تعویض<br>خشاب</button><button class="ctrl" id="shoot">FIRE</button></div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 (()=> {
 const $=id=>document.getElementById(id);
-let scene,camera,renderer,peer,conn,roomCode='',started=false,connected=false;
-let me={x:0,z:4,yaw:0,pitch:0,score:0},other={x:0,z:-4,yaw:Math.PI,score:0};
-let otherMesh,lastSend=0,keys={};
+let scene,camera,renderer,peer,conn,roomCode='',started=false,online=false,host=false,otherMesh,enemyBullets=[];
+let me={x:0,z:7,yaw:0,pitch:0,hp:100,ammo:30,reserve:90,score:0},enemy={x:0,z:-7,yaw:Math.PI,hp:100,score:0};
+let keys={},lastSend=0,lastShot=0,reloading=false,moveSpeed=0.12,lookPointer=null,prevX=0,prevY=0,clock;
+const mat=(c,r=.85,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
 function status(t){$('status').textContent=t}
-function makeWorld(){
- if(started)return;
- if(!window.THREE){status('کتابخانهٔ سه‌بعدی بارگذاری نشد. اینترنت/VPN را بررسی و صفحه را دوباره باز کن.');return}
- $('menu').style.display='none';$('hud').style.display='block';started=true;
- scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb8);scene.fog=new THREE.Fog(0x9aabb8,25,75);
- camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,120);
- renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;$('game').appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0xdcecff,0x343b42,2.1));
- const sun=new THREE.DirectionalLight(0xffe4c2,3.0);sun.position.set(-8,18,7);scene.add(sun);
- const fill=new THREE.DirectionalLight(0x9bbbe0,1.0);fill.position.set(10,7,-10);scene.add(fill);
- const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
- const concrete=mat(0x68747b),darkConcrete=mat(0x424d55),sand=mat(0x9b927d),crateMat=mat(0x776044),crateEdge=mat(0x4c4234),metal=mat(0x333e46,.55,.55),yellow=mat(0xd4a72c),floorMat=mat(0x777a72),redMat=mat(0xb63c32),blueMat=mat(0x324d68);
- function box(x,y,z,sx,sy,sz,material=concrete){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);m.position.set(x,y,z);scene.add(m);return m}
- // Concrete industrial floor and painted tactical lanes
- box(0,-.22,0,42,.35,42,floorMat);
- const lineMat=new THREE.MeshStandardMaterial({color:0xd0b65d,roughness:.8});
- for(let z=-17;z<=17;z+=4){let stripe=box(0,-.035,z,28,.015,.045,lineMat)}
- // Outer perimeter walls and industrial buildings
- box(0,2,-21,42,4,1.2,darkConcrete);box(0,2,21,42,4,1.2,darkConcrete);box(-21,2,0,1.2,4,42,darkConcrete);box(21,2,0,1.2,4,42,darkConcrete);
- // Warehouse blocks at map edges
- box(-13,2.1,-12,8,4.2,7,concrete);box(13,2.1,12,8,4.2,7,concrete);
- box(-13,4.35,-12,8.2,.25,7.2,metal);box(13,4.35,12,8.2,.25,7.2,metal);
- // Windows / shutters
- for(let i=0;i<3;i++){box(-13+i*2.1,2.3,-8.42,1.25,1.4,.08,metal);box(10.1,2.2,10+i*2.1,.08,1.3,1.25,metal)}
- // central cover blocks, crates and barriers
- const crate=(x,z,scale=1)=>{box(x,.65*scale,z,1.5*scale,1.3*scale,1.5*scale,crateMat);box(x,.66*scale,z-.77*scale,1.25*scale,.12*scale,.04,crateEdge);box(x-.77*scale,.66*scale,z,.04,1.1*scale,1.25*scale,crateEdge)};
- [[-5,-7,1],[4,-8,1],[7,-1,1],[-7,3,1],[2,5,1],[-2,10,.9],[10,7,.8],[-10,-2,.8]].forEach(v=>crate(...v));
- // Jersey barriers
- for(let i=0;i<4;i++){const b=box(-2+i*1.35,.42,-1,1.15,.84,.5,sand);b.rotation.y=.06}
- // lamps / pipes give the scene more industrial depth
- for(let z=-14;z<=14;z+=14){box(-18,3,z,.18,5,.18,metal);box(-18,5.5,z,1.3,.16,.6,yellow)}
- // player avatar seen by opponent
+function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
+function box(x,y,z,sx,sy,sz,material){let o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);o.position.set(x,y,z);scene.add(o);return o}
+function buildWorld(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x9aabb9);scene.fog=new THREE.Fog(0x9aabb9,32,95);
+ camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,140);
+ renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;$('game').appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xdcecff,0x343b42,2.0));
+ let sun=new THREE.DirectionalLight(0xffe0b4,3.1);sun.position.set(-10,22,8);scene.add(sun);
+ let fill=new THREE.DirectionalLight(0x8eb8df,1.1);fill.position.set(12,8,-12);scene.add(fill);
+ const concrete=mat(0x7b8587),dark=mat(0x3e4a50),sand=mat(0xb6a78b),crate=mat(0x795c3b),metal=mat(0x39464d,.48,.65),yellow=mat(0xe3b52d),floor=mat(0x777c77),blue=mat(0x324c62),red=mat(0x8b3d32);
+ box(0,-.25,0,46,.5,46,floor);
+ // perimeter and buildings
+ box(0,2,-23,46,4,1.2,dark);box(0,2,23,46,4,1.2,dark);box(-23,2,0,1.2,4,46,dark);box(23,2,0,1.2,4,46,dark);
+ box(-15,2,-13,9,4,9,concrete);box(15,2,13,9,4,9,concrete);
+ box(-15,4.1,-13,9.3,.25,9.3,metal);box(15,4.1,13,9.3,.25,9.3,metal);
+ // center warehouse walls and door frame
+ box(0,1.8,-11,11,3.6,1.1,dark);box(-5.6,1.8,-5,1,3.6,12,concrete);box(5.6,1.8,-5,1,3.6,12,concrete);
+ box(0,3.7,-5,12,.35,12,metal);
+ // shipping containers
+ box(-9,1.3,5,7,2.6,3.2,blue);box(9,1.3,-5,7,2.6,3.2,red);
+ // crates and barriers
+ for(const [x,z] of [[-5,1],[5,5],[-12,-3],[12,7],[-2,-16],[3,15],[15,-13],[-15,14]]){
+   box(x,.85,z,2.2,1.7,2.2,crate);
+   for(let yy=.25;yy<1.6;yy+=.55)box(x,yy,z+1.12,2.15,.06,.06,yellow);
+ }
+ // barrels
+ for(const [x,z] of [[-7,-7],[7,10],[-17,4],[17,-4]]){
+  let b=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,1.2,16),metal);b.position.set(x,.6,z);scene.add(b);
+  let ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.045,8,20),yellow);ring.rotation.x=Math.PI/2;ring.position.set(x,.8,z);scene.add(ring);
+ }
+ // tactical lane markings
+ for(let z=-18;z<=18;z+=6)box(0,-.005,z,30,.015,.045,yellow);
+ // cover props, lamps
+ for(let x of [-18,18]){let pole=box(x,3,0,.18,6,.18,metal);let lamp=box(x,5.8,0,.7,.18,.7,yellow)}
+ // sky/ambient dust specks
+ for(let i=0;i<35;i++){let p=new THREE.Mesh(new THREE.SphereGeometry(.035,5,5),new THREE.MeshBasicMaterial({color:0xd8c7a0,transparent:true,opacity:.35}));p.position.set((Math.random()-.5)*38,Math.random()*4,(Math.random()-.5)*38);scene.add(p)}
+ // opponent avatar
  otherMesh=new THREE.Group();
- const uniform=mat(0x9b3d32),helmet=mat(0x30383d,.6,.2),skin=mat(0xc69c7a);
- const torso=new THREE.Mesh(new THREE.BoxGeometry(.62,.8,.36),uniform);torso.position.y=1.05;otherMesh.add(torso);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),skin);head.position.y=1.62;otherMesh.add(head);
- const helm=new THREE.Mesh(new THREE.SphereGeometry(.24,16,10,0,Math.PI*2,0,Math.PI/2),helmet);helm.position.y=1.68;otherMesh.add(helm);
- const legs=mat(0x353e45);for(const x of [-.18,.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.22,.62,.24),legs);leg.position.set(x,.36,0);otherMesh.add(leg)}
- const gun=new THREE.Mesh(new THREE.BoxGeometry(.16,.13,.65),metal);gun.position.set(.36,1.2,-.25);otherMesh.add(gun);scene.add(otherMesh);
- // First-person rifle attached to camera (decorative model)
- const weapon=new THREE.Group();
- const gunBody=new THREE.Mesh(new THREE.BoxGeometry(.22,.2,.75),metal);gunBody.position.set(.42,-.38,-.75);weapon.add(gunBody);
- const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.48,10),darkConcrete);barrel.rotation.x=Math.PI/2;barrel.position.set(.42,-.34,-1.28);weapon.add(barrel);
- const stock=new THREE.Mesh(new THREE.BoxGeometry(.18,.16,.32),crateEdge);stock.position.set(.42,-.4,-.28);weapon.add(stock);
- const sight=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,.14),yellow);sight.position.set(.42,-.23,-.75);weapon.add(sight);
+ let body=new THREE.Mesh(new THREE.BoxGeometry(.7,1.1,.42),blue);body.position.y=.95;otherMesh.add(body);
+ let head=new THREE.Mesh(new THREE.SphereGeometry(.27,12,10),mat(0x303b42));head.position.y=1.7;otherMesh.add(head);
+ let gun=new THREE.Mesh(new THREE.BoxGeometry(.15,.16,.85),metal);gun.position.set(.35,1.25,-.25);otherMesh.add(gun);
+ otherMesh.position.set(enemy.x,0,enemy.z);scene.add(otherMesh);
+ // player weapon model in camera space
+ let weapon=new THREE.Group();
+ let gunBody=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.72),mat(0x20282c,.4,.7));gunBody.position.set(.34,-.27,-.55);weapon.add(gunBody);
+ let barrel=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.5,10),metal);barrel.rotation.x=Math.PI/2;barrel.position.set(.34,-.23,-1.02);weapon.add(barrel);
+ let stock=new THREE.Mesh(new THREE.BoxGeometry(.16,.22,.28),mat(0x694a2e));stock.position.set(.34,-.28,-.12);weapon.add(stock);
  camera.add(weapon);scene.add(camera);
- // Scattered low rubble and ventilation units
- for(let i=0;i<10;i++){let x=(i%5)*6-12,z=(Math.floor(i/5)*16)-8;box(x,.32,z,.9,.64,.8,darkConcrete)}
- $('roomLabel').textContent='اتاق: '+roomCode+' · '+(connected?'متصل':'منتظر دوست');
- addEventListener('resize',resize);requestAnimationFrame(loop);
 }
-function resize(){if(renderer){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}}
-function sendState(){if(conn&&conn.open)conn.send({type:'state',x:me.x,z:me.z,yaw:me.yaw,score:me.score})}
-function updateConnected(){connected=true;if(started)$('roomLabel').textContent='کد اتاق: '+roomCode+' · متصل';status('اتصال برقرار شد! هر دو نفر می‌توانند حرکت کنند.')}
-function setupPeer(){
- peer.on('error',e=>status('خطای اتصال ('+e.type+'). کد را بررسی کن؛ هر دو گوشی باید اینترنت داشته باشند.'));
- peer.on('connection',c=>{if(conn){c.close();return}conn=c;wireConn();});
+function startGame(mode){
+ if(started)return;
+ if(!window.THREE){status('کتابخانه سه‌بعدی بارگذاری نشد؛ اینترنت را بررسی کن.');return}
+ $('menu').style.display='none';$('hud').style.display='block';started=true;buildWorld();clock=new THREE.Clock();animate();
+ $('roomLabel').textContent=mode;
 }
-function wireConn(){
- conn.on('open',()=>{updateConnected();if(!started)makeWorld();conn.send({type:'hello'})});
- conn.on('data',d=>{
-  if(d.type==='hello'){if(!started)makeWorld();updateConnected()}
-  if(d.type==='state'){other.x=d.x;other.z=d.z;other.yaw=d.yaw;other.score=d.score||0;if(otherMesh){otherMesh.position.set(other.x,0,other.z);otherMesh.rotation.y=other.yaw}$('score').textContent='امتیاز: '+me.score+' - '+other.score}
-  if(d.type==='shot'){me.score++;$('score').textContent='امتیاز: '+me.score+' - '+other.score;sendState()}
- });
- conn.on('close',()=>{connected=false;if(started)$('roomLabel').textContent='کد اتاق: '+roomCode+' · قطع ارتباط';});
-}
-$('create').onclick=()=>{
- if(!window.Peer){status('کتابخانهٔ اتصال بارگذاری نشد. اینترنت/VPN را بررسی کن.');return}
- roomCode=Math.random().toString(36).slice(2,7).toUpperCase();$('room').value=roomCode;
- status('در حال ساخت اتاق…');peer=new Peer('fps'+roomCode.toLowerCase());setupPeer();
- peer.on('open',()=>{status('اتاق آماده است! کد '+roomCode+' را برای دوستت بفرست.');makeWorld()});
-};
-$('join').onclick=()=>{
- if(!window.Peer){status('کتابخانهٔ اتصال بارگذاری نشد. اینترنت/VPN را بررسی کن.');return}
- roomCode=$('room').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
- if(!roomCode){status('اول کد اتاق دوستت را وارد کن.');return}
- status('در حال اتصال…');peer=new Peer();setupPeer();
- peer.on('open',()=>{conn=peer.connect('fps'+roomCode.toLowerCase(),{reliable:true});wireConn();setTimeout(()=>{if(!conn||!conn.open)status('وصل نشد؛ کد را بررسی کن و مطمئن شو میزبان هنوز داخل بازی است.')},10000)});
-};
-function hold(id){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[id]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[id]=false))}
-['forward','back','left','right'].forEach(hold);
-let ammo=30; $('shoot').addEventListener('pointerdown',e=>{e.preventDefault();if(ammo<=0){status('مهمات تمام شد؛ این نسخه فعلاً خشاب‌گذاری ندارد.');return}ammo--; $('stats').textContent='سلامت 100 | مهمات '+ammo+'/90'; if(conn&&conn.open){conn.send({type:'shot'});status('شلیک ثبت شد!')}else status('شلیک آزمایشی؛ برای امتیازگیری دوستت باید متصل باشد.')});
-let look=$('look'),tx=null,ty=null;
-look.addEventListener('pointerdown',e=>{tx=e.clientX;ty=e.clientY;try{look.setPointerCapture(e.pointerId)}catch(_){}});
-look.addEventListener('pointermove',e=>{if(tx===null||!started)return;me.yaw-=(e.clientX-tx)*.008;me.pitch=Math.max(-.7,Math.min(.7,me.pitch+(e.clientY-ty)*.006));tx=e.clientX;ty=e.clientY});
-['pointerup','pointercancel','lostpointercapture'].forEach(ev=>look.addEventListener(ev,()=>{tx=ty=null}));
-$('backmenu').onclick=()=>{location.reload()};
-function loop(t){if(!started)return;requestAnimationFrame(loop);
- const speed=.105,f=(keys.forward?1:0)-(keys.back?1:0),s=(keys.right?1:0)-(keys.left?1:0);
- me.x+=(-Math.sin(me.yaw)*f+Math.cos(me.yaw)*s)*speed;me.z+=(-Math.cos(me.yaw)*f-Math.sin(me.yaw)*s)*speed;
- me.x=Math.max(-13,Math.min(13,me.x));me.z=Math.max(-13,Math.min(13,me.z));
- camera.position.set(me.x,1.65,me.z);camera.rotation.order='YXZ';camera.rotation.y=me.yaw;camera.rotation.x=me.pitch;
- if(otherMesh){otherMesh.position.set(other.x,0,other.z);otherMesh.rotation.y=other.yaw}
- if(t-lastSend>80){sendState();lastSend=t}
+function animate(){
+ if(!started)return;requestAnimationFrame(animate);
+ let dt=Math.min(clock.getDelta(),.04),f=0,s=0;
+ if(keys.forward||keys.KeyW)f+=1;if(keys.back||keys.KeyS)f-=1;if(keys.left||keys.KeyA)s-=1;if(keys.right||keys.KeyD)s+=1;
+ let speed=moveSpeed*(keys.shift?1.35:1);
+ me.x+=Math.sin(me.yaw)*f*speed+Math.cos(me.yaw)*s*speed;
+ me.z-=Math.cos(me.yaw)*f*speed-Math.sin(me.yaw)*s*speed;
+ me.x=Math.max(-20,Math.min(20,me.x));me.z=Math.max(-20,Math.min(20,me.z));
+ camera.position.set(me.x,1.62,me.z);camera.rotation.order='YXZ';camera.rotation.y=me.yaw;camera.rotation.x=me.pitch;
+ if(online&&conn&&conn.open&&performance.now()-lastSend>45){conn.send({t:'p',x:me.x,z:me.z,yaw:me.yaw});lastSend=performance.now()}
+ if(otherMesh){otherMesh.position.set(enemy.x,0,enemy.z);otherMesh.rotation.y=enemy.yaw}
+ for(let i=enemyBullets.length-1;i>=0;i--){let b=enemyBullets[i];b.position.add(b.userData.v);if(b.position.distanceTo(camera.position)>40){scene.remove(b);enemyBullets.splice(i,1)}else if(b.position.distanceTo(camera.position)<.7){me.hp=Math.max(0,me.hp-5);scene.remove(b);enemyBullets.splice(i,1);$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`}}
  renderer.render(scene,camera);
 }
-})();
-</script>
-
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch((err) => {
-      console.log("Service worker registration failed:", err);
-    });
-  });
+function shoot(){
+ if(!started||performance.now()-lastShot<170||reloading)return;lastShot=performance.now();
+ if(me.ammo<=0){toast('خشاب خالی است؛ reload را بزن');return}
+ me.ammo--; $('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`;
+ // muzzle flash
+ let flash=new THREE.PointLight(0xffc45a,2,3);flash.position.set(me.x+Math.sin(me.yaw)*.8,1.5,me.z-Math.cos(me.yaw)*.8);scene.add(flash);setTimeout(()=>scene.remove(flash),55);
+ if(online&&conn&&conn.open)conn.send({t:'shot',x:me.x,z:me.z,yaw:me.yaw});
+ else if(otherMesh){let dx=enemy.x-me.x,dz=enemy.z-me.z,dist=Math.hypot(dx,dz),angle=Math.atan2(dx,-dz);let diff=Math.atan2(Math.sin(angle-me.yaw),Math.cos(angle-me.yaw));if(dist<19&&Math.abs(diff)<.12){enemy.hp-=25;toast('اصابت تمرینی!');if(enemy.hp<=0){enemy.hp=100;me.score++;$('score').textContent=`${me.score} : ${enemy.score}`;enemy.x=(Math.random()-.5)*18;enemy.z=(Math.random()-.5)*18}}}
 }
+function reload(){if(reloading||me.ammo===30||me.reserve<=0)return;reloading=true;toast('در حال تعویض خشاب...');setTimeout(()=>{let n=Math.min(30-me.ammo,me.reserve);me.ammo+=n;me.reserve-=n;reloading=false;$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`},1200)}
+function bindHold(id,key){let el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;el.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,()=>keys[key]=false))}
+['forward','back','left','right'].forEach((id)=>bindHold(id,id));
+$('shoot').addEventListener('pointerdown',e=>{e.preventDefault();shoot()});$('reload').onclick=reload;
+$('look').addEventListener('pointerdown',e=>{lookPointer=e.pointerId;prevX=e.clientX;prevY=e.clientY;$('look').setPointerCapture(e.pointerId)});
+$('look').addEventListener('pointermove',e=>{if(lookPointer!==e.pointerId)return;let dx=e.clientX-prevX,dy=e.clientY-prevY;prevX=e.clientX;prevY=e.clientY;me.yaw-=dx*.006;me.pitch=Math.max(-1.1,Math.min(1.1,me.pitch-dy*.004)});
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>$('look').addEventListener(ev,()=>lookPointer=null));
+addEventListener('keydown',e=>{keys['KeyW']=e.code==='KeyW'||keys['KeyW'];keys['KeyS']=e.code==='KeyS'||keys['KeyS'];keys['KeyA']=e.code==='KeyA'||keys['KeyA'];keys['KeyD']=e.code==='KeyD'||keys['KeyD'];if(e.code==='Space')shoot();if(e.code==='KeyR')reload()});
+addEventListener('keyup',e=>{if(e.code==='KeyW')keys['KeyW']=false;if(e.code==='KeyS')keys['KeyS']=false;if(e.code==='KeyA')keys['KeyA']=false;if(e.code==='KeyD')keys['KeyD']=false});
+$('solo').onclick=()=>startGame('TRAINING MODE');
+$('create').onclick=()=>{
+ if(!window.Peer){status('اتصال آنلاین بارگذاری نشد؛ حالت تمرینی را اجرا کن.');return}
+ roomCode='OPS'+Math.random().toString(36).slice(2,6).toUpperCase();host=true;
+ peer=new Peer(roomCode);status('در حال ساخت اتاق...');
+ peer.on('open',id=>{status('کد اتاق: '+id+' — این کد را برای دوستت بفرست.');$('room').value=id});
+ peer.on('connection',c=>{conn=c;setupConn();startGame('ONLINE · HOST')});
+ peer.on('error',e=>status('خطای اتصال: '+e.type+' — دوباره تلاش کن.'));
+};
+$('join').onclick=()=>{
+ let code=$('room').value.trim().toUpperCase();if(!code){status('اول کد اتاق دوستت را وارد کن.');return}
+ if(!window.Peer){status('اتصال آنلاین بارگذاری نشد.');return}
+ peer=new Peer();status('در حال اتصال به اتاق '+code+'...');
+ peer.on('open',()=>{conn=peer.connect(code);conn.on('open',()=>{setupConn();startGame('ONLINE · GUEST')})});
+ peer.on('error',e=>status('اتصال برقرار نشد: '+e.type+' — کد و اینترنت را بررسی کن.'));
+};
+function setupConn(){online=true;conn.on('data',d=>{if(d.t==='p'){enemy.x=d.x;enemy.z=d.z;enemy.yaw=d.yaw}if(d.t==='shot'){let dx=me.x-d.x,dz=me.z-d.z,dist=Math.hypot(dx,dz),a=Math.atan2(dx,-dz),diff=Math.atan2(Math.sin(a-d.yaw),Math.cos(a-d.yaw));if(dist<18&&Math.abs(diff)<.16){me.hp=Math.max(0,me.hp-10);$('stats').textContent=`HP ${me.hp} · AMMO ${me.ammo}/${me.reserve}`;toast('ضربه خوردی!')}}});conn.on('close',()=>toast('ارتباط با بازیکن قطع شد.'))}
+$('backmenu').onclick=()=>location.reload();
+addEventListener('resize',()=>{if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+})();
 </script>
 </body></html>
